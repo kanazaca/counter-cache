@@ -38,7 +38,7 @@ Schema::create('products', function (Blueprint $table) {
       $table->increments('id');
       $table->string('name');
       $table->string('ref');
-      $table->integer('comments_count'); // This is the counter that you have to add
+      $table->integer('comments_count')->default(0); // This is the counter that you have to add
       $table->timestamps();
   });
 ```
@@ -80,7 +80,8 @@ public $counterCacheOptions = [
     ]
 ]; // you can have more than one counter 
 
-public function CommentValidatedFilter() // this code will be executed before the counting (save and update method)
+// this code will be executed before the counting (save and update method)
+public function CommentValidatedFilter() 
 {
     if ($this->validated)
     {
