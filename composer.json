@@ -5,9 +5,14 @@
     "authors": [
         {
             "name": "Hugo Neto",
-            "email": "kanazaca118@hotmail.com"
+            "email": "hugo.neto@grandesplanos.com"
         }
     ],
-    "minimum-stability": "dev",
+    "minimum-stability": "stable",
+    "autoload": {
+        "psr-4": {
+            "kanazaca\\CounterCache\\": "src/"
+        }
+    },
     "require": {}
 }
