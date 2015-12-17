@@ -35,7 +35,7 @@ trait CounterCache
 
             if (!$updated)
             {
-                $this->incrementCounter($method, $counter); // decrement 1 in the old relation - xit happens bro
+                $this->incrementCounter($method, $counter);
             }
         }
 
