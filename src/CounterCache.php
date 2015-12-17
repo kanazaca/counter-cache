@@ -20,6 +20,29 @@ trait CounterCache
     }
 
     /**
+     * Override update method because we need to listen for relation changes
+     *
+     * @param array $attributes
+     * @return bool
+     */
+    public function update(array $attributes = [])
+    {
+        foreach($this->counterCacheOptions as $method => $counter)
+        {
+            $this->decrementCounter($method, $counter); // decrement 1 in the old relation - xit happens bro
+
+            $updated = parent::update($attributes);
+
+            if (!$updated)
+            {
+                $this->incrementCounter($method, $counter); // decrement 1 in the old relation - xit happens bro
+            }
+        }
+
+        return true;
+    }
+
+    /**
      * Override delete method because we need to decrement all counters
      * when one of them is gone :(
      *
@@ -42,18 +65,12 @@ trait CounterCache
      */
     public function incrementAllCounters()
     {
-        //TODO: too many indentation level, change this in the near future
         foreach($this->counterCacheOptions as $method => $counter)
         {
-            if(isset($counter['filter']))
+            if(!$this->incrementCounter($method, $counter))
             {
-                if (!$this->runFilter($counter['filter']))
-                {
-                    continue;
-                }
+                continue;
             }
-
-            $this->updateCounterField($method, 'increment', $counter['field']);
         }
 
         return true;
@@ -68,8 +85,44 @@ trait CounterCache
     {
         foreach($this->counterCacheOptions as $method => $counter)
         {
-            $this->updateCounterField($method, 'decrement', $counter['field']);
+            $this->decrementCounter($method, $counter);
         }
+
+        return true;
+    }
+
+    /**
+     * Increment one counter
+     *
+     * @param $method
+     * @param $counter
+     * @return bool
+     */
+    public function incrementCounter($method, $counter, $removeCache = false)
+    {
+        if(isset($counter['filter']))
+        {
+            if (!$this->runFilter($counter['filter']))
+            {
+                return false;
+            }
+        }
+
+        $this->updateCounterField($method, 'increment', $counter['field']);
+
+        return true;
+    }
+
+    /**
+     * Decrement one counter
+     *
+     * @param $method
+     * @param $counter
+     * @return bool
+     */
+    public function decrementCounter($method, $counter, $removeCache = false)
+    {
+        $this->updateCounterField($method, 'decrement', $counter['field']);
 
         return true;
     }
@@ -83,6 +136,8 @@ trait CounterCache
      */
     public function updateCounterField($method, $type, $field)
     {
+        $this->clearRelationCache($method);
+
         $relation = $this->buildRelation($method);
 
         $relation->$type($field);
@@ -97,6 +152,16 @@ trait CounterCache
     public function runFilter($filterName)
     {
         return $this->$filterName();
+    }
+
+    /**
+     * Clears relation cache, by reloading it
+     *
+     * @param $model
+     */
+    public function clearRelationCache($model)
+    {
+        $this->load($model);
     }
 
     /**
