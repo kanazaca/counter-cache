@@ -42,11 +42,18 @@ trait CounterCache
      */
     public function incrementAllCounters()
     {
-        foreach($this->counterCacheOptions as $method => $field)
+        //TODO: too many indentation level, change this in the near future
+        foreach($this->counterCacheOptions as $method => $counter)
         {
-            $relation = $this->buildRelation($method);
+            if(isset($counter['filter']))
+            {
+                if (!$this->runFilter($counter['filter']))
+                {
+                    continue;
+                }
+            }
 
-            $relation->increment($field);
+            $this->updateCounterField($method, 'increment', $counter['field']);
         }
 
         return true;
@@ -59,14 +66,37 @@ trait CounterCache
      */
     public function decrementAllCounters()
     {
-        foreach($this->counterCacheOptions as $method => $field)
+        foreach($this->counterCacheOptions as $method => $counter)
         {
-            $relation = $this->buildRelation($method);
-
-            $relation->decrement($field);
+            $this->updateCounterField($method, 'decrement', $counter['field']);
         }
 
         return true;
+    }
+
+    /**
+     * Update the field (increment or decrement)
+     *
+     * @param $method
+     * @param $type
+     * @param $field
+     */
+    public function updateCounterField($method, $type, $field)
+    {
+        $relation = $this->buildRelation($method);
+
+        $relation->$type($field);
+    }
+
+    /**
+     * Run filter
+     *
+     * @param $filterName
+     * @return bool
+     */
+    public function runFilter($filterName)
+    {
+        return $this->$filterName();
     }
 
     /**
