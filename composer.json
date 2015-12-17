@@ -1,0 +1,13 @@
+{
+    "name": "kanazaca/counter-cache",
+    "description": "Package for Laravel to implement counter cache",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Hugo Neto",
+            "email": "kanazaca118@hotmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {}
+}
