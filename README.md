@@ -14,7 +14,7 @@ Imagine if you have to show 50 products in a list and have to show a counter for
 Add this to your composer.json file, in the require object:
 
 ```javascript
-"kanazaca/CounterCache": "1.0.*"
+"kanazaca/counter-cache": "1.0.*"
 ```
 
 After that, run composer install to install the package.
