@@ -172,6 +172,6 @@ trait CounterCache
      */
     public function buildRelation($model)
     {
-        return $this->$model;
+        return $this->$model();
     }
 }
