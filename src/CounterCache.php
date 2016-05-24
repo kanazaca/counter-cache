@@ -23,9 +23,10 @@ trait CounterCache
      * Override update method because we need to listen for relation changes
      *
      * @param array $attributes
+     * @param array $options
      * @return bool
      */
-    public function update(array $attributes = [])
+    public function update(array $attributes = [], array $options = [])
     {
         foreach($this->counterCacheOptions as $method => $counter)
         {
