@@ -45,7 +45,7 @@ Schema::create('products', function (Blueprint $table) {
 After this run `php artisan migrate`
 
 ### Model
-Comments model, you have to use the trait, define the $counterCacheOptions and make the relation with the product : 
+Comments model, you have to use the trait, define the $counterCacheOptions and make the relation with the product :
 ```php
 namespace App;
 
@@ -55,12 +55,12 @@ use kanazaca\CounterCache\CounterCache;
 class Comments extends Model
 {
     use CounterCache;
-    
-    // you can have more than one counter 
+
+    // you can have more than one counter
     public $counterCacheOptions = [
         'Product' => ['field' => 'comments_count', 'foreignKey' => 'product_id']
     ];
-    
+
     public function Product()
     {
         return $this->belongsTo('App\Product');
@@ -78,16 +78,15 @@ public $counterCacheOptions = [
         'foreignKey' => 'product_id',
         'filter' => 'CommentValidatedFilter'
     ]
-]; // you can have more than one counter 
+]; // you can have more than one counter
 
 // this code will be executed before the counting (save and update method)
-public function CommentValidatedFilter() 
+public function CommentValidatedFilter()
 {
-    if ($this->validated)
-    {
+    if ($this->validated) {
         return true;
     }
-    
+
     return false;
 }
 ```
