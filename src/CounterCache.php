@@ -11,8 +11,7 @@ trait CounterCache
      */
     public function save(array $options = [])
     {
-        if(parent::save($options))
-        {
+        if(parent::save($options)) {
             return $this->incrementAllCounters();
         }
 
@@ -28,14 +27,12 @@ trait CounterCache
      */
     public function update(array $attributes = [], array $options = [])
     {
-        foreach($this->counterCacheOptions as $method => $counter)
-        {
+        foreach($this->counterCacheOptions as $method => $counter) {
             $this->decrementCounter($method, $counter); // decrement 1 in the old relation - xit happens bro
 
             $updated = parent::update($attributes);
 
-            if (!$updated)
-            {
+            if (!$updated) {
                 $this->incrementCounter($method, $counter);
             }
         }
@@ -51,8 +48,7 @@ trait CounterCache
      */
     public function delete()
     {
-        if(parent::delete())
-        {
+        if(parent::delete()) {
             return $this->decrementAllCounters();
         }
 
@@ -66,10 +62,8 @@ trait CounterCache
      */
     public function incrementAllCounters()
     {
-        foreach($this->counterCacheOptions as $method => $counter)
-        {
-            if(!$this->incrementCounter($method, $counter))
-            {
+        foreach($this->counterCacheOptions as $method => $counter) {
+            if(!$this->incrementCounter($method, $counter)) {
                 continue;
             }
         }
@@ -84,8 +78,7 @@ trait CounterCache
      */
     public function decrementAllCounters()
     {
-        foreach($this->counterCacheOptions as $method => $counter)
-        {
+        foreach($this->counterCacheOptions as $method => $counter) {
             $this->decrementCounter($method, $counter);
         }
 
@@ -101,10 +94,8 @@ trait CounterCache
      */
     public function incrementCounter($method, $counter, $removeCache = false)
     {
-        if(isset($counter['filter']))
-        {
-            if (!$this->runFilter($counter['filter']))
-            {
+        if(isset($counter['filter'])) {
+            if (!$this->runFilter($counter['filter'])) {
                 return false;
             }
         }
